@@ -25,13 +25,11 @@ const app = require('./app');
 
 */
 
-/** Connecting to local DB
- 
-    mongoose.connect(process.env.DATABASE_LOCAL).then(() => {
-        console.log('DB Connection Successful');
-    });
+// Connecting to local DB
 
- */
+mongoose.connect(process.env.DATABASE_LOCAL).then(() => {
+	console.log('DB Connection Successful');
+});
 
 const port = process.env.PORT || 4000;
 

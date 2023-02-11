@@ -1,5 +1,5 @@
 {
-	"name": "express-folder-structure-for-api-dev",
+	"name": "chatbuddy",
 	"version": "1.0.0",
 	"description": "The defacto folder structure for building nodeJS express api projects",
 	"main": "server.js",
@@ -14,6 +14,7 @@
 	"author": "Gabriel Ibenye",
 	"license": "ISC",
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
 		"dotenv": "^13.0.1",
 		"express": "^4.17.2",
 		"express-mongo-sanitize": "^2.2.0",
@@ -22,8 +23,12 @@
 		"helmet": "^5.0.2",
 		"hpp": "^0.2.3",
 		"http": "^0.0.1-security",
+		"jsonwebtoken": "^9.0.0",
 		"mongoose": "^6.1.6",
 		"morgan": "^1.10.0",
+		"nodemailer": "^6.9.1",
+		"uuid": "^9.0.0",
+		"validator": "^13.9.0",
 		"xss-clean": "^0.1.1"
 	},
 	"devDependencies": {
