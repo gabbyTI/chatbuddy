@@ -1,51 +1,57 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
-const userSchema = mongoose.Schema({
-	email: {
-		type: String,
-		required: [true, 'Please provide your email'],
-		unique: true,
-		lowercase: true,
-		validate: [validator.isEmail, 'Please enter a valid email address'],
-	},
-	photo: String,
-	role: {
-		type: String,
-		enum: {
-			values: ['user', 'admin'],
-			message: 'Enter a valid user role (user,admin)',
+const userSchema = mongoose.Schema(
+	{
+		email: {
+			type: String,
+			required: [true, 'Please provide your email'],
+			unique: true,
+			lowercase: true,
+			validate: [validator.isEmail, 'Please enter a valid email address'],
 		},
-		default: 'user',
-	},
-	password: {
-		type: String,
-		required: [true, 'Please provide a password'],
-		minLength: 8,
-		select: false,
-	},
-	passwordConfirm: {
-		type: String,
-		required: [true, 'Please confirm your password'],
-		validate: {
-			// this only works on save
-			validator: function (el) {
-				return el === this.password;
+		photo: String,
+		role: {
+			type: String,
+			enum: {
+				values: ['user', 'admin'],
+				message: 'Enter a valid user role (user,admin)',
 			},
-			message: 'The passwords do not match!!',
+			default: 'user',
+		},
+		password: {
+			type: String,
+			required: [true, 'Please provide a password'],
+			minLength: 8,
+			select: false,
+		},
+		passwordConfirm: {
+			type: String,
+			required: [true, 'Please confirm your password'],
+			validate: {
+				// this only works on save
+				validator: function (el) {
+					return el === this.password;
+				},
+				message: 'The passwords do not match!!',
+			},
+		},
+		passwordChangedAt: Date,
+		passwordResetToken: String,
+		passwordResetExpires: Date,
+		active: {
+			type: Boolean,
+			default: true,
+			select: false,
 		},
 	},
-	passwordChangedAt: Date,
-	passwordResetToken: String,
-	passwordResetExpires: Date,
-	active: {
-		type: Boolean,
-		default: true,
-		select: false,
-	},
-});
+	{
+		timestamps: true,
+	}
+);
 
 userSchema.pre('save', async function (next) {
 	// only run this function if the password is modified

@@ -2,7 +2,6 @@ const Chat = require('../models/chatModel');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const factory = require('./handlerFactory');
 
 /**
  * This function creates a new object based on the given 'obj' and filters out any fields that are not specified as 'allowedFields'.
@@ -20,38 +19,6 @@ const filteredObject = (obj, ...allowedFields) => {
 };
 
 const isArrayEmpty = (arr) => Array.isArray(arr) && arr.length <= 0;
-
-exports.updateMe = catchAsync(async (req, res, next) => {
-	// create errorif user posts password data
-	if (req.body.password || req.body.passwordConfirm) {
-		return next(new AppError('This route is not for updating password', 400));
-	}
-
-	// filter out unwanted fields
-	const filteredBody = filteredObject(req.body, 'name', 'email');
-
-	// update user document
-	const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-		new: true,
-		runValidators: true,
-	});
-
-	res.status(200).json({
-		status: 'success',
-		data: {
-			user: updatedUser,
-		},
-	});
-});
-
-exports.deleteMe = catchAsync(async (req, res, next) => {
-	await User.findByIdAndUpdate(req.user.id, { active: false });
-
-	res.status(204).json({
-		status: 'success',
-		data: null,
-	});
-});
 
 exports.createChat = catchAsync(async (req, res, next) => {
 	// get id of the authenticated user from the "protect" middleware
@@ -90,7 +57,7 @@ exports.getAllChats = catchAsync(async (req, res, next) => {
 exports.getChat = catchAsync(async (req, res, next) => {
 	let query = Chat.find({ uuid: req.params.uuid, user: req.user.id });
 	// populate options replaces the user id referenced in the chat collection with the user document
-	popOptions = ['user'];
+	const popOptions = ['user'];
 	if (popOptions) query = query.populate(popOptions);
 
 	const doc = await query;

@@ -16,10 +16,10 @@
 		"no-unsupported-features": "off",
 		"class-methods-use-this": "off",
 		"prefer-destructuring": ["error", { "object": true, "array": false }],
-		"no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
-		"parserOptions": {
-			"sourceType": "module",
-			"allowImportExportEverywhere": true
-		}
+		"no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }]
+		// "parserOptions": {
+		// 	"sourceType": "module",
+		// 	"allowImportExportEverywhere": true
+		// }
 	}
 }
