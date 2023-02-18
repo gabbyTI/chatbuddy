@@ -95,6 +95,9 @@ exports.sendMessageInChat = catchAsync(async (req, res, next) => {
 		);
 	}
 
+	//check if chat is a group
+	//if chat is a group, check if user sending message belongs in the group
+
 	// Get the message that the user sent
 	const userMessage = req.body.message;
 
