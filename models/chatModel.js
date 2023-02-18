@@ -15,12 +15,33 @@ const chatSchema = new mongoose.Schema(
 			ref: 'User',
 			required: [true, 'Chat must belong to a user'],
 		},
+		type: {
+			type: String,
+			enum: ['individual', 'group'],
+			default: 'individual',
+		},
+		members: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'User',
+				required: function () {
+					return this.type === 'group';
+				},
+			},
+		],
+		maxMembers: {
+			type: Number,
+			default: 5,
+		},
 		title: {
 			type: String,
 			required: [true, 'Chat must have a title'],
 		},
 		lastPrompt: {
 			type: String,
+		},
+		total_tokens: {
+			type: Number,
 		},
 	},
 	{

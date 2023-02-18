@@ -13,6 +13,8 @@
 		"no-param-reassign": "off",
 		"no-return-await": "off",
 		"no-underscore-dangle": "off",
+		"no-plusplus": "off",
+		"import/no-extraneous-dependencies": "off",
 		"no-unsupported-features": "off",
 		"class-methods-use-this": "off",
 		"prefer-destructuring": ["error", { "object": true, "array": false }],

@@ -2,6 +2,7 @@ const Chat = require('../models/chatModel');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
+const Message = require('../models/messageModel');
 
 /**
  * This function creates a new object based on the given 'obj' and filters out any fields that are not specified as 'allowedFields'.
@@ -24,32 +25,38 @@ exports.createChat = catchAsync(async (req, res, next) => {
 	// get id of the authenticated user from the "protect" middleware
 	req.body.user = req.user.id;
 
-	const doc = await Chat.create(req.body);
+	const filteredBody = filteredObject(req.body, 'title', 'user', 'type');
+
+	// eslint-disable-next-line no-unused-expressions
+	if (filteredBody.type === 'group') filteredBody.members = [filteredBody.user];
+
+	const chat = await Chat.create(filteredBody);
 
 	res.status(201).json({
 		status: 'success',
 		data: {
-			data: doc,
+			chat: chat,
 		},
 	});
 });
 
 exports.getAllChats = catchAsync(async (req, res, next) => {
 	// execute query
+	console.log(req.query);
 	const features = new APIFeatures(Chat.find({ user: req.user.id }), req.query)
 		.filter()
 		.sort()
 		.limitFields()
 		.paginate();
 
-	const doc = await features.query;
-	// const doc = await query;
+	// .select('-lastPrompt') makes sure that the lastPrompt field is not returned with the result
+	const chats = await features.query.select('-lastPrompt');
 
 	res.status(200).json({
 		status: 'success',
-		result: doc.length,
+		count: chats.length,
 		data: {
-			data: doc,
+			data: chats,
 		},
 	});
 });
@@ -99,18 +106,20 @@ exports.updateChat = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteChat = catchAsync(async (req, res, next) => {
-	let doc = await Chat.find({ uuid: req.params.uuid, user: req.user.id });
+	let chat = await Chat.find({ uuid: req.params.uuid, user: req.user.id });
 
-	if (isArrayEmpty(doc)) {
+	if (isArrayEmpty(chat)) {
 		return next(new AppError('No document found with that ID', 404));
 	}
 
-	doc = await Chat.deleteOne({ uuid: req.params.uuid, user: req.user.id });
+	const messages = await Message.deleteMany({ chat: chat._id });
+	console.log(messages);
+	chat = await Chat.deleteOne({ uuid: req.params.uuid, user: req.user.id });
 
 	res.status(204).json({
 		status: 'success',
 		data: {
-			data: doc,
+			data: chat,
 		},
 	});
 });

@@ -6,6 +6,9 @@ const router = express.Router();
 
 router.use(authController.protect);
 
-router.post('/send/:chat', messageController.sendMessage);
+// router.route('/').post(messageController.sendMessage);
+router.get('/all/:chat', messageController.getAllChatMessages);
+router.post('/send-new', messageController.sendNewMessage);
+router.post('/send-in-chat/:chat', messageController.sendMessageInChat);
 
 module.exports = router;
